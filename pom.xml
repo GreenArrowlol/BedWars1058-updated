@@ -36,6 +36,11 @@
             <id>codemc-nms</id>
             <url>https://repo.codemc.io/repository/nms/</url>
         </repository>
+        <!-- Hosts net.md-5:bungeecord-chat:1.8-SNAPSHOT (gone from sonatype). -->
+        <repository>
+            <id>codemc-public</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
         <!-- Public snapshots repo: hosts sidebar lib (releases repo is auth-gated). -->
         <repository>
             <id>andrei1058-snapshots</id>
