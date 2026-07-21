@@ -12,9 +12,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- Centralized sidebar lib version. Pinned releases (23.2/24.2) were removed from
-             the public repo; 26.6-SNAPSHOT is the only publicly available build. -->
-        <sidebar.version>26.6-SNAPSHOT</sidebar.version>
+        <!-- Sidebar lib is vendored in-repo under vendor-repo/ (built from the
+             26.6-SNAPSHOT artifacts, pinned here as an immutable 26.6). This removes
+             any build-time dependency on the upstream andrei1058 repo. -->
+        <sidebar.version>26.6</sidebar.version>
     </properties>
 
     <repositories>
@@ -41,19 +42,8 @@
             <id>codemc-public</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
-        <!-- Public snapshots repo: hosts sidebar lib (releases repo is auth-gated). -->
-        <repository>
-            <id>andrei1058-snapshots</id>
-            <url>https://repo.andrei1058.com/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <!-- Reposilite serves snapshots without checksums; don't hard-fail. -->
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </repository>
+        <!-- Vendored sidebar lib lives in vendor-repo/ and is wired up via the
+             os-specific profiles below (file:// URL differs on Windows vs Unix). -->
     </repositories>
 
     <dependencies>
@@ -137,6 +127,36 @@
         <module>versionsupport_v1_20_R3</module>
         <module>versionsupport_v1_20_R4</module>
     </modules>
+
+    <!-- Wire up the in-repo vendored sidebar maven repo. The file:// URL form
+         differs by OS: Unix absolute paths start with '/', Windows paths start
+         with a drive letter and need the extra leading slash. -->
+    <profiles>
+        <profile>
+            <id>vendored-sidebar-unix</id>
+            <activation>
+                <os><family>unix</family></os>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>vendored-sidebar</id>
+                    <url>file://${maven.multiModuleProjectDirectory}/vendor-repo</url>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>vendored-sidebar-windows</id>
+            <activation>
+                <os><family>windows</family></os>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>vendored-sidebar</id>
+                    <url>file:///${maven.multiModuleProjectDirectory}/vendor-repo</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <repository>

@@ -1,0 +1,6 @@
+# Vendored maven repo: never apply EOL conversion, or the .pom bytes would
+# change on checkout and no longer match the committed .sha1/.md5 checksums.
+vendor-repo/** -text
+
+# Built artifacts are binary.
+*.jar binary
