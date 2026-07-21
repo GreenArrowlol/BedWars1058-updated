@@ -7,11 +7,14 @@
     <groupId>com.andrei1058.bedwars</groupId>
     <artifactId>BedWars1058</artifactId>
     <packaging>pom</packaging>
-    <version>25.2</version>
+    <version>25.3.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Centralized sidebar lib version. Pinned releases (23.2/24.2) were removed from
+             the public repo; 26.6-SNAPSHOT is the only publicly available build. -->
+        <sidebar.version>26.6-SNAPSHOT</sidebar.version>
     </properties>
 
     <repositories>
@@ -32,6 +35,19 @@
         <repository>
             <id>codemc-nms</id>
             <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+        <!-- Public snapshots repo: hosts sidebar lib (releases repo is auth-gated). -->
+        <repository>
+            <id>andrei1058-snapshots</id>
+            <url>https://repo.andrei1058.com/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <!-- Reposilite serves snapshots without checksums; don't hard-fail. -->
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
         </repository>
     </repositories>
 

@@ -48,6 +48,15 @@ public class ShopManager extends ConfigManager {
         registerListeners();
     }
 
+    /**
+     * Re-read shop.yml from disk and rebuild the shop index (categories, items, tiers).
+     * Does not re-register listeners, so it is safe to call at runtime (e.g. from /bw reload).
+     */
+    public void reloadConfiguration() {
+        reload();
+        loadShop();
+    }
+
     private void saveDefaults() {
         getYml().options().header("Shop with quick buy and tiers");
 
