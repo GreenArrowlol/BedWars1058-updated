@@ -14,6 +14,7 @@ import com.andrei1058.bedwars.api.sidebar.ISidebarService;
 import com.andrei1058.bedwars.metrics.MetricsManager;
 import com.andrei1058.bedwars.sidebar.thread.*;
 import com.andrei1058.spigot.sidebar.SidebarManager;
+import com.andrei1058.spigot.sidebar.SidebarProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,6 +116,40 @@ public class SidebarService implements ISidebarService {
 
     private SidebarService() {
         sidebarHandler = SidebarManager.init();
+        // Since the sidebar library update, SidebarManager.init() no longer picks the
+        // version specific provider on its own, so we have to resolve and set it here.
+        // Without this the provider stays null and every sidebar/tab/name-tag call throws.
+        if (sidebarHandler != null && sidebarHandler.getSidebarProvider() == null) {
+            SidebarProvider provider = loadSidebarProvider();
+            if (provider != null) {
+                sidebarHandler.setSidebarProvider(provider);
+            } else {
+                Bukkit.getLogger().severe("[BedWars1058] Could not find a sidebar provider for this " +
+                        "server version. Scoreboard, tab list and name tags will not work.");
+            }
+        }
+    }
+
+    /**
+     * Resolve the version specific sidebar provider (e.g. v1_20_R3) for the running server.
+     */
+    private static SidebarProvider loadSidebarProvider() {
+        String pkg = Bukkit.getServer().getClass().getPackage().getName();
+        String version = pkg.substring(pkg.lastIndexOf('.') + 1);
+        // First candidate is the shaded/relocated package used in the release jar,
+        // the second one is the original library package (e.g. when running from the IDE).
+        for (String base : new String[]{
+                "com.andrei1058.bedwars.libs.sidebar.",
+                "com.andrei1058.spigot.sidebar."
+        }) {
+            try {
+                Class<?> clazz = Class.forName(base + version + ".ProviderImpl");
+                return (SidebarProvider) clazz.getDeclaredConstructor().newInstance();
+            } catch (ReflectiveOperationException | LinkageError ignored) {
+                // not this package/version, try the next candidate
+            }
+        }
+        return null;
     }
 
     public void giveSidebar(@NotNull Player player, @Nullable IArena arena, boolean delay) {
