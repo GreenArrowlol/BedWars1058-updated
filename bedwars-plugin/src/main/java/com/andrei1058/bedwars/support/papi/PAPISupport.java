@@ -116,35 +116,37 @@ public class PAPISupport extends PlaceholderExpansion {
             if(targetedStat.isEmpty() || targetedStat.isBlank()) {
                 return null;
             }
+            // stats may be null for a player with no record yet (e.g. a new player). In that
+            // case fall back to sensible defaults instead of returning null, otherwise
+            // PlaceholderAPI would print the raw placeholder text.
             PlayerStats stats = BedWars.getStatsManager().getUnsafe(player.getUniqueId());
-            if(stats == null) {
-                return null;
-            }
             switch (targetedStat) {
-                case "firstplay":
-                    Instant firstPlay = stats.getFirstPlay();
-                    return new SimpleDateFormat(getMsg(player, Messages.FORMATTING_STATS_DATE_FORMAT)).format(firstPlay != null ? Timestamp.from(firstPlay) : null);
-                case "lastplay":
-                    Instant lastPlay = stats.getLastPlay();
-                    return new SimpleDateFormat(getMsg(player, Messages.FORMATTING_STATS_DATE_FORMAT)).format(lastPlay != null ? Timestamp.from(lastPlay) : null);
+                case "firstplay": {
+                    Instant firstPlay = stats != null ? stats.getFirstPlay() : null;
+                    return new SimpleDateFormat(getMsg(player, Messages.FORMATTING_STATS_DATE_FORMAT)).format(Timestamp.from(firstPlay != null ? firstPlay : Instant.now()));
+                }
+                case "lastplay": {
+                    Instant lastPlay = stats != null ? stats.getLastPlay() : null;
+                    return new SimpleDateFormat(getMsg(player, Messages.FORMATTING_STATS_DATE_FORMAT)).format(Timestamp.from(lastPlay != null ? lastPlay : Instant.now()));
+                }
                 case "total_kills":
-                    return String.valueOf(stats.getTotalKills());
+                    return String.valueOf(stats != null ? stats.getTotalKills() : 0);
                 case "kills":
-                    return String.valueOf(stats.getKills());
+                    return String.valueOf(stats != null ? stats.getKills() : 0);
                 case "wins":
-                    return String.valueOf(stats.getWins());
+                    return String.valueOf(stats != null ? stats.getWins() : 0);
                 case "finalkills":
-                    return String.valueOf(stats.getFinalKills());
+                    return String.valueOf(stats != null ? stats.getFinalKills() : 0);
                 case "deaths":
-                    return String.valueOf(stats.getDeaths());
+                    return String.valueOf(stats != null ? stats.getDeaths() : 0);
                 case "losses":
-                    return String.valueOf(stats.getLosses());
+                    return String.valueOf(stats != null ? stats.getLosses() : 0);
                 case "finaldeaths":
-                    return String.valueOf(stats.getFinalDeaths());
+                    return String.valueOf(stats != null ? stats.getFinalDeaths() : 0);
                 case "bedsdestroyed":
-                    return String.valueOf(stats.getBedsDestroyed());
+                    return String.valueOf(stats != null ? stats.getBedsDestroyed() : 0);
                 case "gamesplayed":
-                    return String.valueOf(stats.getGamesPlayed());
+                    return String.valueOf(stats != null ? stats.getGamesPlayed() : 0);
             }
         }
 
