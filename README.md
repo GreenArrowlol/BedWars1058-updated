@@ -7,7 +7,7 @@ here: [andrei1058/BedWars1058](https://github.com/andrei1058/BedWars1058).
 
 I made this fork mainly to keep the plugin building and running on the newer Minecraft
 server versions, so that it can be used for the setup shown in
-[Bedwars Setup — Modern Minigame Series](https://builtbybit.com/resources/bedwars-setup-modern-minigame-series.74829/).
+[Bedwars Setup - Modern Minigame Series](https://builtbybit.com/resources/bedwars-setup-modern-minigame-series.74829/).
 
 BedWars1058 is open source under the **GNU GPL 3.0** license, and this fork stays under the
 same license.
@@ -17,16 +17,24 @@ same license.
 Only maintenance and build changes are done here. Nothing of the core gameplay is removed.
 In short, this is what all is done:
 
-- **Building with Java 21** — the project now compiles and packages properly using JDK 21.
-- **Fixed the compilation** — some code was not compiling on the newer setup, that is fixed
+- **Building with Java 21** - the project now compiles and packages properly using JDK 21.
+- **Fixed the compilation** - some code was not compiling on the newer setup, that is fixed
   so the plugin builds cleanly and runs on modern Spigot/Paper servers.
-- **Bumped the version to 25.3.0**.
-- **Expanded `/bw reload`** — the reload command is improved to cover more things.
-- **Vendored the SidebarLib inside the repo** — earlier the build was depending on Andrei's
+- **Bumped the version to 25.3.1**.
+- **Expanded `/bw reload`** - the reload command is improved to cover more things.
+- **Fixed the scoreboard, tab list and name tags** - after the SidebarLib update the sidebar
+  provider was not getting set, so a `NullPointerException` was thrown when a player joined and
+  the scoreboard, tab and name tags were coming empty. The plugin now picks and sets the correct
+  version provider on startup, so everything shows up properly again. (Tested on Paper 1.20.4.)
+- **Vendored the SidebarLib inside the repo** - earlier the build was depending on Andrei's
   own Maven repository for the sidebar library. That repo dependency is removed and the
   library is kept inside the project itself (`vendor-repo/`), so anybody can build the
   project without needing the external repo.
-- **Made the build fork-friendly** — the old deploy pipelines and the `andrei1058` releases
+- **Removed the dependency on the offline flow-nbt repository** - the SlimeWorldManager and
+  flow-nbt libraries used to come from an external repo (`repo.glaremasters.me`) which went
+  down. Those libraries are now vendored inside `vendor-repo/` and the dead repository is
+  removed, so the build keeps working on a clean machine.
+- **Made the build fork-friendly** - the old deploy pipelines and the `andrei1058` releases
   repository are dropped from the CI and from the dependency resolution, so that the build
   resolves and passes on a clean/fresh runner without any private access.
 
