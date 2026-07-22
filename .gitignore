@@ -92,3 +92,7 @@ nb-configuration.xml
 # vendored sidebar maven repo (committed on purpose)
 !vendor-repo/
 !vendor-repo/**
+
+# tooling / assistant artifacts (never publish)
+.claude/
+CLAUDE.md
