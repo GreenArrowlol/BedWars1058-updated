@@ -816,6 +816,7 @@ public class Spanish extends Language {
         addDefaultStatsMsg(yml, "last-play", "&6Última Partida", "&f{lastPlay}");
         addDefaultStatsMsg(yml, "games-played", "&6Juegos Jugados", "&f{gamesPlayed}");
         yml.addDefault(Messages.FORMATTING_STATS_DATE_FORMAT, "yyyy/MM/dd HH:mm");
+        yml.addDefault(Messages.FORMATTING_STATS_NO_DATA, "Not yet");
 
         yml.addDefault(Messages.MEANING_NEVER, "Nunca");
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(

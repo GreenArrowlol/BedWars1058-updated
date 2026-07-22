@@ -274,6 +274,8 @@ public class Messages {
     public static String FORMATTING_GENERATOR_TIER3 = "format-tier3";
     public static String FORMATTING_DESPAWNABLE_UTILITY_NPC_HEALTH = "format-despawnable-health";
     public static String FORMATTING_STATS_DATE_FORMAT = "format-stats-time";
+    // Shown for stats placeholders when a player has no stats record yet (e.g. never played).
+    public static String FORMATTING_STATS_NO_DATA = "format-stats-no-data";
     public static String FORMAT_PAPI_PLAYER_TEAM_TEAM = "format-papi-player-team";
     public static String FORMAT_PAPI_PLAYER_TEAM_SHOUT = "format-papi-player-shout";
     public static String FORMAT_PAPI_PLAYER_TEAM_SPECTATOR = "format-papi-player-spectator";

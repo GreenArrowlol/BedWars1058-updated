@@ -942,6 +942,7 @@ public class Russian extends Language{
         addDefaultStatsMsg(yml, "last-play", "&6Последняя игра", "&f{lastPlay}");
         addDefaultStatsMsg(yml, "games-played", "&6Игр сыграно", "&f{gamesPlayed}");
         yml.addDefault(Messages.FORMATTING_STATS_DATE_FORMAT, "yyyy/MM/dd HH:mm");
+        yml.addDefault(Messages.FORMATTING_STATS_NO_DATA, "Not yet");
 
         yml.addDefault(Messages.MEANING_NEVER, "Никогда");
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(
