@@ -108,8 +108,7 @@ The compiled jar will be placed inside the `release/` folder.
 - **Anti AFK System**, **Custom Join Items**, **Re-Join**, **TNT Jump**, and seasonal events.
 
 ## Contributing
-Contributions are welcome. Please have a look at [CONTRIBUTING.md](CONTRIBUTING.md) before
-opening a pull request.
+Contributions are welcome. Feel free to open a pull request with your changes.
 
 ## 3rd party libraries
 - [bStats](https://bstats.org/getting-started/include-metrics)
