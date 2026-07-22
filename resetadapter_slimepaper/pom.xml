@@ -30,10 +30,7 @@
             <id>is-snapshots</id>
             <url>https://repo.infernalsuite.com/repository/maven-snapshots/</url>
         </repository>
-        <repository>
-            <id>flow-nbt</id>
-            <url>https://repo.glaremasters.me/repository/concuncan/</url>
-        </repository>
+        <!-- flow-nbt is vendored in-repo under vendor-repo/ -->
     </repositories>
 
     <dependencies>
@@ -54,6 +51,14 @@
             <artifactId>api</artifactId>
             <version>1.20-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- flow-nbt 2.0.2 is only on the (offline) glaremasters repo; we pin the
+                     vendored 2.0.0 directly below instead of pulling it transitively. -->
+                <exclusion>
+                    <groupId>com.flowpowered</groupId>
+                    <artifactId>flow-nbt</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>
