@@ -48,7 +48,7 @@ public class Reload extends SubCommand {
         showInList(true);
         setPermission(Permissions.PERMISSION_RELOAD);
         setDisplayInfo(Misc.msgHoverClick("§6 ▪ §7/" + getParent().getName() + " "+getSubCommandName()+"       §8 - §ereload configs",
-                "§fReload config files and messages.\n§7Values read live update instantly.\n§cSettings applied at startup still need a full restart!", "/"+ getParent().getName() + " "+getSubCommandName(), ClickEvent.Action.RUN_COMMAND));
+                "§fReloads config files and messages live.\n§7Most edited values apply instantly.\n§7Only startup settings (server type, listeners) need a full restart.", "/"+ getParent().getName() + " "+getSubCommandName(), ClickEvent.Action.RUN_COMMAND));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Reload extends SubCommand {
             s.sendMessage("§6 ▪ §7"+l.getLangName()+" reloaded!");
         }
 
-        s.sendMessage("§a ▪ §7Reload complete. §8Startup-only settings (server type, lobby, listeners) still require a full restart.");
+        s.sendMessage("§a ▪ §7Reload complete. §8Only startup settings (server type, listeners) need a full restart.");
         return true;
     }
 
