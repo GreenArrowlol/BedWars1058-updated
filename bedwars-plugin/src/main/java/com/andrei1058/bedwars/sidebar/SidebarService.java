@@ -294,7 +294,10 @@ public class SidebarService implements ISidebarService {
     }
 
     public void refreshPlaceholders() {
-        this.sidebars.forEach((k, v) -> v.getHandle().refreshPlaceholders());
+        this.sidebars.forEach((k, v) -> {
+            v.getHandle().refreshPlaceholders();
+            v.refreshScores();
+        });
     }
 
     public void refreshPlaceholders(IArena arena) {
@@ -302,6 +305,7 @@ public class SidebarService implements ISidebarService {
             if (v.getArena() != null)
                 if (v.getArena().equals(arena)) {
                     v.getHandle().refreshPlaceholders();
+                    v.refreshScores();
                 }
         });
     }
@@ -320,11 +324,19 @@ public class SidebarService implements ISidebarService {
 
     public void refreshHealth() {
         this.sidebars.forEach((k, v) -> {
-            if (null != v.getArena()) {
-                v.getHandle().playerHealthRefreshAnimation();
-                for (Player player : v.getArena().getPlayers()) {
-                    v.getHandle().setPlayerHealth(player, (int) Math.ceil(player.getHealth()));
-                }
+            IArena arena = v.getArena();
+            if (null == arena) {
+                return;
+            }
+            // an arena that got disabled or restarted drops its player list, so a sidebar
+            // still pointing at it would blow up here
+            List<Player> arenaPlayers = arena.getPlayers();
+            if (null == arenaPlayers) {
+                return;
+            }
+            v.getHandle().playerHealthRefreshAnimation();
+            for (Player player : arenaPlayers) {
+                v.getHandle().setPlayerHealth(player, (int) Math.ceil(player.getHealth()));
             }
         });
     }

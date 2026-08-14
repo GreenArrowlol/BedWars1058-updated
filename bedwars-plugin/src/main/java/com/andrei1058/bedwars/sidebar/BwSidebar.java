@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -46,6 +47,11 @@ public class BwSidebar implements ISidebar {
     private final SimpleDateFormat nextEventDateFormat;
 
     private final ConcurrentLinkedQueue<PlaceholderProvider> persistentProviders = new ConcurrentLinkedQueue<>();
+
+    // last score content sent for each line, used to know when a score has to be sent again
+    private final Map<ScoreLine, String> lastScores = new IdentityHashMap<>();
+    private Field handleLinesField;
+    private boolean handleLinesFieldResolved = false;
 
     private final BwTabList tabList;
 
@@ -87,6 +93,9 @@ public class BwSidebar implements ISidebar {
 
         ConcurrentLinkedQueue<PlaceholderProvider> placeholders = this.getPlaceholders(this.getPlayer());
         placeholders.addAll(this.persistentProviders);
+
+        // the previous lines are gone, so their cached scores are not needed anymore
+        this.lastScores.clear();
 
         // if it is the first time setting content we create the handle
         if (null == handle) {
@@ -306,7 +315,11 @@ public class BwSidebar implements ISidebar {
                 );
             }
         } else {
-            providers.add(new PlaceholderProvider("{on}", () -> String.valueOf(arena.getPlayers().size())));
+            providers.add(new PlaceholderProvider("{on}", () -> {
+                // null once the arena got disabled or restarted
+                List<Player> arenaPlayers = arena.getPlayers();
+                return String.valueOf(null == arenaPlayers ? 0 : arenaPlayers.size());
+            }));
             providers.add(new PlaceholderProvider("{max}", () -> String.valueOf(arena.getMaxPlayers())));
             providers.add(new PlaceholderProvider("{nextEvent}", this::getNextEventName));
 
@@ -467,6 +480,70 @@ public class BwSidebar implements ISidebar {
                 break;
         }
         return time == 0 ? "0" : nextEventDateFormat.format(new Date(time));
+    }
+
+    /**
+     * On 1.20.3 and above the team status is rendered in the score slot of its line instead of the
+     * line itself. The sidebar library only re-sends the line content when refreshing placeholders,
+     * so the score slot kept whatever it had when the line was created and a team could still show
+     * as alive long after it got eliminated. Re-send the score of the lines whose score changed.
+     */
+    public void refreshScores() {
+        if (null == handle) {
+            return;
+        }
+        Collection<ScoreLine> handleLines = getHandleLines();
+        if (null == handleLines) {
+            return;
+        }
+        Collection<PlaceholderProvider> placeholders = handle.getPlaceholders();
+        for (ScoreLine scoreLine : handleLines) {
+            SidebarLine line = scoreLine.getLine();
+            if (!(line instanceof ScoredLine)) {
+                continue;
+            }
+            String current = line.getTrimReplacePlaceholdersScore(player, null, placeholders);
+            String previous = lastScores.put(scoreLine, current);
+            // the score was already sent with the right content when the line was created
+            if (null != previous && !previous.equals(current)) {
+                // re-sends the score packet, which carries the score content as well
+                scoreLine.setScoreAmount(scoreLine.getScoreAmount());
+            }
+        }
+    }
+
+    /**
+     * Get the lines of the current handle. They are not exposed by the sidebar library.
+     *
+     * @return lines or null if they could not be retrieved.
+     */
+    @SuppressWarnings("unchecked")
+    private @Nullable Collection<ScoreLine> getHandleLines() {
+        if (!handleLinesFieldResolved) {
+            handleLinesFieldResolved = true;
+            for (Class<?> type = handle.getClass(); null != type; type = type.getSuperclass()) {
+                try {
+                    Field field = type.getDeclaredField("lines");
+                    field.setAccessible(true);
+                    handleLinesField = field;
+                    break;
+                } catch (NoSuchFieldException ignored) {
+                    // keep walking up the hierarchy
+                }
+            }
+            if (null == handleLinesField) {
+                Bukkit.getLogger().warning("[BedWars1058] Could not access the sidebar lines. " +
+                        "Team status might not refresh on this server version.");
+            }
+        }
+        if (null == handleLinesField) {
+            return null;
+        }
+        try {
+            return (Collection<ScoreLine>) handleLinesField.get(handle);
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return null;
+        }
     }
 
     private boolean hasNoArena() {
