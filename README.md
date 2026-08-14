@@ -130,6 +130,8 @@ This build reports anonymous usage statistics to [ArrowStats](https://github.com
 instead of bStats. To opt out, set `enabled: false` in `plugins/ArrowStats/config.yml`. That file is
 shared, so opting out covers every ArrowStats plugin on the server at once.
 
+![Bedwars-updated](https://arrowstats.org/plugin/10/image.png)
+
 ## License
 This project is licensed under the **GNU GPL 3.0**, same as the original BedWars1058.
 See the [LICENSE](LICENSE) file for details.
