@@ -50,6 +50,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -61,6 +62,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -221,7 +223,41 @@ public class BreakPlace implements Listener {
                     //return;
                 }
             }
+            if (!isBuildSession(player)) {
+                denyBlockPlacing(event);
+            }
+            return;
         }
+
+        IArena arena = Arena.getArenaByPlayer(player);
+        if (null == arena) {
+            return;
+        }
+        // building is only allowed to players of a running game
+        if (arena.getStatus() == GameState.playing && arena.isPlayer(player)
+                && !arena.getRespawnSessions().containsKey(player)) {
+            return;
+        }
+        denyBlockPlacing(event);
+    }
+
+    /**
+     * Stop a block from being placed while the interaction is handled, before the client gets to
+     * show it. Cancelling the place event happens once the client already predicted the block,
+     * which leaves it standing long enough to be jumped on and used to climb walls.
+     * <p>
+     * Only the item usage is denied, so items that open a menu on right click keep working.
+     */
+    private static void denyBlockPlacing(@NotNull PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        ItemStack hand = event.getItem();
+        if (null == hand || hand.getType() == Material.AIR || !hand.getType().isBlock()) {
+            return;
+        }
+        event.setUseItemInHand(Event.Result.DENY);
+        event.getPlayer().updateInventory();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

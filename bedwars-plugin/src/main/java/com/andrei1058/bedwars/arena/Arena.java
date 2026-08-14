@@ -915,6 +915,10 @@ public class Arena implements IArena {
             if (BedWars.getServerType() == ServerType.MULTIARENA) {
                 // Send items
                 Arena.sendLobbyCommandItems(p);
+            } else {
+                // nothing to restore, so the game items must not follow the player out
+                p.getInventory().clear();
+                p.getInventory().setArmorContents(null);
             }
         } else {
             pg.restore();
@@ -1055,6 +1059,10 @@ public class Arena implements IArena {
             if (BedWars.getServerType() == ServerType.MULTIARENA) {
                 // Send items
                 Arena.sendLobbyCommandItems(p);
+            } else {
+                // nothing to restore, so the game items must not follow the player out
+                p.getInventory().clear();
+                p.getInventory().setArmorContents(null);
             }
         } else {
             pg.restore();
@@ -1680,12 +1688,31 @@ public class Arena implements IArena {
      * This will clear the inventory first.
      */
     public static void sendLobbyCommandItems(Player p) {
-        if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH) == null) return;
-        if (!BedWars.config.getLobbyWorldName().equalsIgnoreCase(p.getWorld().getName())) return;
+        // the trip back to the lobby can be an async teleport, so the player may still be in the
+        // arena world at this point. Whatever the game left behind has to go in any case, or it
+        // ends up in the lobby, where blocks can be used to climb over the protected build area.
         p.getInventory().clear();
+        p.getInventory().setArmorContents(null);
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            if (!BedWars.config.getLobbyWorldName().equalsIgnoreCase(p.getWorld().getName())) return;
+        if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH) == null) return;
+
+        // number of times we look for the player to land in the lobby world before giving up
+        giveLobbyCommandItems(p, 5);
+    }
+
+    /**
+     * Give the lobby items once the player is in the lobby world, retrying while the teleport
+     * is still on its way.
+     */
+    private static void giveLobbyCommandItems(Player p, int attemptsLeft) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!p.isOnline()) return;
+            if (!BedWars.config.getLobbyWorldName().equalsIgnoreCase(p.getWorld().getName())) {
+                if (attemptsLeft > 1) {
+                    giveLobbyCommandItems(p, attemptsLeft - 1);
+                }
+                return;
+            }
             for (String item : config.getYml().getConfigurationSection(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH).getKeys(false)) {
 
                 if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", item)) == null) {
