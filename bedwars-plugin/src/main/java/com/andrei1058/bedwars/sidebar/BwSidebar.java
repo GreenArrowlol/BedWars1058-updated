@@ -160,7 +160,11 @@ public class BwSidebar implements ISidebar {
                                 .replace("{TeamColor}", team.getColor().chat().toString())
                                 .replace("{TeamName}", teamName);
 
-                        if (line.contains("{TeamStatus}") && getAPI().getVersionSupport().getVersion() >= 10) {
+                        // 1.20.3+ can render the status in the score slot, but the client right-aligns
+                        // it to the widest line of the sidebar, so it ends up detached from its team.
+                        // Keep it inline with the team name unless the server asks for the score slot.
+                        if (line.contains("{TeamStatus}") && getAPI().getVersionSupport().getVersion() >= 10
+                                && config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_TEAM_STATUS_IN_SCORE_SLOT)) {
                             line = line.replace("{TeamStatus}", "");
                             scoreLine = "{Team" + team.getName() + "Status}";
                         } else {
