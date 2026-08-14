@@ -478,7 +478,7 @@ public class BedWars extends JavaPlugin {
         /* Load Money Configuration */
         MoneyConfig.init();
 
-        // bStats metrics
+        // ArrowStats metrics
         MetricsManager.initService(this);
 
         if (Bukkit.getPluginManager().getPlugin("VipFeatures") != null) {

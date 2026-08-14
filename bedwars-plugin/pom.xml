@@ -58,6 +58,10 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -80,10 +84,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
-            <optional>true</optional>
+            <groupId>com.github.GreenArrowlol</groupId>
+            <artifactId>arrowstats-metrics</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
@@ -355,8 +359,8 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>com.andrei1058.bedwars.libs.bstats</shadedPattern>
+                            <pattern>cc.arrowstats.metrics</pattern>
+                            <shadedPattern>com.andrei1058.bedwars.libs.arrowstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>

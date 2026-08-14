@@ -11,7 +11,6 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.api.sidebar.ISidebar;
 import com.andrei1058.bedwars.api.sidebar.ISidebarService;
-import com.andrei1058.bedwars.metrics.MetricsManager;
 import com.andrei1058.bedwars.sidebar.thread.*;
 import com.andrei1058.spigot.sidebar.SidebarManager;
 import com.andrei1058.spigot.sidebar.SidebarProvider;
@@ -50,7 +49,6 @@ public class SidebarService implements ISidebarService {
                 }
                 Bukkit.getScheduler().runTaskTimer(plugin, new RefreshPlayerListTask(), 1L, playerListRefreshInterval);
             }
-            MetricsManager.appendPie("sb_list_refresh_interval", () -> String.valueOf(playerListRefreshInterval));
 
             int placeholdersRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_PLACEHOLDERS_REFRESH_INTERVAL);
             if (placeholdersRefreshInterval < 1) {
@@ -63,7 +61,6 @@ public class SidebarService implements ISidebarService {
                 }
                 Bukkit.getScheduler().runTaskTimer(plugin, new RefreshPlaceholdersTask(), 1L, placeholdersRefreshInterval);
             }
-            MetricsManager.appendPie("sb_placeholder_refresh_interval", () -> String.valueOf(placeholdersRefreshInterval));
 
             int titleRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_TITLE_REFRESH_INTERVAL);
             if (titleRefreshInterval < 1) {
@@ -75,7 +72,6 @@ public class SidebarService implements ISidebarService {
                 }
                 Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new RefreshTitleTask(), 1L, titleRefreshInterval);
             }
-            MetricsManager.appendPie("sb_title_refresh_interval", () -> String.valueOf(titleRefreshInterval));
 
             int healthAnimationInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_REFRESH);
             if (healthAnimationInterval < 1) {
@@ -88,7 +84,6 @@ public class SidebarService implements ISidebarService {
                 }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new RefreshLifeTask(), 1L, healthAnimationInterval);
             }
-            MetricsManager.appendPie("sb_health_refresh_interval", () -> String.valueOf(healthAnimationInterval));
 
             int tabHeaderFooterRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_TAB_HEADER_FOOTER_REFRESH_INTERVAL);
             if (tabHeaderFooterRefreshInterval < 1 || !config.getBoolean(ConfigPath.SB_CONFIG_TAB_HEADER_FOOTER_ENABLE)) {
@@ -101,13 +96,6 @@ public class SidebarService implements ISidebarService {
                 }
                 Bukkit.getScheduler().runTaskTimer(plugin, new RefreshTabHeaderFooterTask(), 1L, tabHeaderFooterRefreshInterval);
             }
-            MetricsManager.appendPie("sb_header_footer_refresh_interval", () -> String.valueOf(tabHeaderFooterRefreshInterval));
-
-            var lobbySidebar = config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_LOBBY_SIDEBAR) &&
-                    BedWars.getServerType() == ServerType.MULTIARENA;
-            MetricsManager.appendPie("sb_lobby_enable", () -> String.valueOf(lobbySidebar));
-            var gameSidebar = config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_GAME_SIDEBAR);
-            MetricsManager.appendPie("sb_game_enable", () -> String.valueOf(gameSidebar));
 
             BedWars.registerEvents(new ScoreboardListener());
         }

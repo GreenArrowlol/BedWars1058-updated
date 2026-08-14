@@ -23,7 +23,6 @@ package com.andrei1058.bedwars.halloween;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.halloween.shop.PumpkinContent;
-import com.andrei1058.bedwars.metrics.MetricsManager;
 import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
 import org.bukkit.Bukkit;
@@ -63,7 +62,6 @@ public class HalloweenSpecial {
                 INSTANCE = new HalloweenSpecial();
             }
         }
-        MetricsManager.appendPie("halloween_special_enable", () -> String.valueOf(enable));
     }
 
     protected static boolean checkAvailabilityDate() {

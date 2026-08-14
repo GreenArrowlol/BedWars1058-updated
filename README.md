@@ -119,11 +119,16 @@ The compiled jar will be placed inside the `release/` folder.
 Contributions are welcome. Feel free to open a pull request with your changes.
 
 ## 3rd party libraries
-- [bStats](https://bstats.org/getting-started/include-metrics)
+- [ArrowStats](https://github.com/GreenArrowlol/arrowstats-metrics)
 - SidebarLib (vendored in this repo)
 - [Commons IO](https://mvnrepository.com/artifact/commons-io/commons-io)
 - [HikariCP](https://mvnrepository.com/artifact/com.zaxxer/HikariCP)
 - [SLF4J](http://www.slf4j.org/)
+
+## Metrics
+This build reports anonymous usage statistics to [ArrowStats](https://github.com/GreenArrowlol/arrowstats-metrics)
+instead of bStats. To opt out, set `enabled: false` in `plugins/ArrowStats/config.yml`. That file is
+shared, so opting out covers every ArrowStats plugin on the server at once.
 
 ## License
 This project is licensed under the **GNU GPL 3.0**, same as the original BedWars1058.
