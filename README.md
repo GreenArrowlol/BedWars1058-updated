@@ -20,7 +20,7 @@ In short, this is what all is done:
 - **Building with Java 21** - the project now compiles and packages properly using JDK 21.
 - **Fixed the compilation** - some code was not compiling on the newer setup, that is fixed
   so the plugin builds cleanly and runs on modern Spigot/Paper servers.
-- **Bumped the version to 25.3.1**.
+- **Bumped the version to 25.3.2**.
 - **Expanded `/bw reload`** - the reload command is improved to cover more things.
 - **Fixed the scoreboard, tab list and name tags** - after the SidebarLib update the sidebar
   provider was not getting set, so a `NullPointerException` was thrown when a player joined and
@@ -37,6 +37,22 @@ In short, this is what all is done:
 - **Made the build fork-friendly** - the old deploy pipelines and the `andrei1058` releases
   repository are dropped from the CI and from the dependency resolution, so that the build
   resolves and passes on a clean/fresh runner without any private access.
+- **Fixed the team status on the scoreboard** - on 1.20.3 and above the team status is drawn in
+  the score slot of its line, and that slot was never refreshed, so a team that had been
+  eliminated kept showing a check mark for the rest of the game. The score is now re-sent
+  whenever it changes.
+- **Stopped the `RefreshLifeTask` console spam** - a scoreboard still pointing at an arena that
+  was disabled or restarted threw a `NullPointerException` on every health refresh, because such
+  an arena drops its player list.
+- **Cleaned up the inventory when going back to the lobby** - team selector wool and beds from
+  the finished match were staying in the inventory after a win, a loss or a leave, since the
+  lobby items routine gave up whenever the player had not landed in the lobby world yet, which
+  is what happens on Paper because the teleport is async. This also fixes the lobby items going
+  missing after a game.
+- **Closed a lobby block glitch** - those leftover blocks could be placed in the lobby just long
+  enough to jump on and climb over walls. Block items are now denied while the interaction is
+  handled, so the block never shows up at all. Menu items keep working.
+- **Switched the metrics from bStats to ArrowStats** - see the Metrics section below.
 
 If you are looking for the full original features, documentation and wiki, please refer to
 the [original repository](https://github.com/andrei1058/BedWars1058).
