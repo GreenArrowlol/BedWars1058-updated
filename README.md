@@ -53,14 +53,8 @@ In short, this is what all is done:
   enough to jump on and climb over walls. Block items are now denied while the interaction is
   handled, so the block never shows up at all. Menu items keep working.
 - **Switched the metrics from bStats to ArrowStats** - see the Metrics section below.
-- **Moved the scoreboard team status back next to the team name on 1.20.3+** - upstream draws it
-  in the score slot on those versions, but the client right-aligns the score to the widest line,
-  so the check/cross mark ended up floating at the far edge, detached from its team. It is back
-  inline by default; the old score-slot placement can still be restored with
-  `scoreboard-settings.sidebar.team-status-in-score-slot: true`.
-- **Fixed a crash-the-arena `NullPointerException`** - a stale task hitting an arena mid-restart
-  could throw while refreshing a player's sidebar, killing that arena's game logic. Team lookups
-  now handle a torn-down arena instead of crashing.
+- **Moved the scoreboard team status back next to the team name on 1.20.3+** - upstream draws it in the score slot on those versions, but the client right-aligns the score to the widest line, so the check/cross mark ended up floating at the far edge, detached from its team. It is back inline by default; the old score-slot placement can still be restored with `scoreboard-settings.sidebar.team-status-in-score-slot: true`.
+- **Fixed a crash-the-arena `NullPointerException`** - a stale task hitting an arena mid-restart could throw while refreshing a player's sidebar, killing that arena's game logic. Team lookups now handle a torn-down arena instead of crashing.
 
 If you are looking for the full original features, documentation and wiki, please refer to
 the [original repository](https://github.com/andrei1058/BedWars1058).
