@@ -20,7 +20,7 @@ In short, this is what all is done:
 - **Building with Java 21** - the project now compiles and packages properly using JDK 21.
 - **Fixed the compilation** - some code was not compiling on the newer setup, that is fixed
   so the plugin builds cleanly and runs on modern Spigot/Paper servers.
-- **Bumped the version to 25.3.2**.
+- **Bumped the version to 25.3.3**.
 - **Expanded `/bw reload`** - the reload command is improved to cover more things.
 - **Fixed the scoreboard, tab list and name tags** - after the SidebarLib update the sidebar
   provider was not getting set, so a `NullPointerException` was thrown when a player joined and
@@ -53,6 +53,14 @@ In short, this is what all is done:
   enough to jump on and climb over walls. Block items are now denied while the interaction is
   handled, so the block never shows up at all. Menu items keep working.
 - **Switched the metrics from bStats to ArrowStats** - see the Metrics section below.
+- **Moved the scoreboard team status back next to the team name on 1.20.3+** - upstream draws it
+  in the score slot on those versions, but the client right-aligns the score to the widest line,
+  so the check/cross mark ended up floating at the far edge, detached from its team. It is back
+  inline by default; the old score-slot placement can still be restored with
+  `scoreboard-settings.sidebar.team-status-in-score-slot: true`.
+- **Fixed a crash-the-arena `NullPointerException`** - a stale task hitting an arena mid-restart
+  could throw while refreshing a player's sidebar, killing that arena's game logic. Team lookups
+  now handle a torn-down arena instead of crashing.
 
 If you are looking for the full original features, documentation and wiki, please refer to
 the [original repository](https://github.com/andrei1058/BedWars1058).
