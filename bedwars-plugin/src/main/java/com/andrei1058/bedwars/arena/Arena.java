@@ -1361,7 +1361,7 @@ public class Arena implements IArena {
 
     @Override
     public List<ITeam> getTeams() {
-        return teams;
+        return teams == null ? Collections.emptyList() : teams;
     }
 
     @Override
